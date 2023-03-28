@@ -22,11 +22,11 @@ create table users(
   age smallint not null,
   password varchar(50) not null,
   company_id integer default null,
-  role varchar(50) not null,
+  role varchar(50) default 'user',
   constraint fk_company_id foreign key(company_id) references company(id),
   constraint fk_email_id foreign key(email_id) references emails(id)
 );
-insert into users(username, email_id, age, password, role) values ('admin', 1, 22, 'admin@gmail.com', 'admin');
+insert into users(username, email_id, age, password, role) values ('admin', 1, 22, 'Admin12345', 'owner');
 
 
 drop table if exists cars;
