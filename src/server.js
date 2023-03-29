@@ -4,8 +4,9 @@ import dotenv from "dotenv";
 dotenv.config();
 const PORT = process.env.PORT
 
-import usersRoute from "./routes/users/usersRoute.js";
-import emailsRoute from "./routes/emails/emailsRoute.js";
+import usersRoute from "./routes/usersRoute.js";
+import emailsRoute from "./routes/emailsRoute.js";
+import companyRoute from "./routes/companyRoute.js";
 const app = express();
 
 app.use(express.json());
@@ -13,6 +14,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(usersRoute);
-app.use(emailsRoute)
+app.use(emailsRoute);
+app.use(companyRoute);
 
 app.listen(PORT, () => console.log(`server is running http://localhost:${PORT}`));

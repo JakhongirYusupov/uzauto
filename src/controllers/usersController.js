@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import sql from '../../database/responses.js';
+import sql from '../database/responses.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -81,7 +81,7 @@ export default {
       return res.send(updateUser)
     } catch (error) {
       console.log(error.message);
-      res.json({ status: 400, message: error.message })
+      res.json({ status: 400, message: error.message });
     }
   },
 

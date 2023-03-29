@@ -33,6 +33,7 @@ create table users(
   constraint fk_email_id foreign key(email_id) references emails(id)
 );
 insert into users(username, email_id, age, password, role) values ('admin', 1, 22, 'Admin12345', 'owner');
+
 alter table company add column created_by integer
 constraint fk_company_by references users (id)
 on update cascade on delete cascade

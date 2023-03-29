@@ -1,7 +1,7 @@
 import { Router } from "express";
-import usersController from "../../controllers/users/usersController.js";
-import verifyToken from "../../middlewares/verifytoken.js";
-import userMiddleware from "../../middlewares/userMiddleware.js";
+import usersController from "../controllers/usersController.js";
+import verifyToken from "../middlewares/verifytoken.js";
+import userMiddleware from "../middlewares/userMiddleware.js";
 
 const route = Router();
 

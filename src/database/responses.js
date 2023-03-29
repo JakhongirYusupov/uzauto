@@ -7,7 +7,6 @@ const secret_key = process.env.SECRETKEY;
 const LOGIN = async (data) => {
   try {
     const { email, password } = data;
-    console.log(data);
     const { rows } = await pool.query(`select id from emails where email = $1`, [email]);
     const user = await pool.query(`select id, username, email_id, age, role from users where email_id = $1 and password = $2`, [rows[0].id, password]);
     return user.rows[0]
@@ -87,9 +86,50 @@ const UPDATEUSER = async (data) => {
 
 const DELETEUSER = async (id) => {
   try {
-    console.log(id);
     const res = await pool.query(`delete from emails where id = $1`, [id]);
     return res
+  } catch (error) {
+    console.log(error);
+    return error.message
+  }
+}
+
+const UPDATEEMAIL = async (data) => {
+  try {
+    const rows = await pool.query(`update emails set email = $1 where id = $2`, data);
+    return rows
+  } catch (error) {
+    console.log(error);
+    return error.message
+  }
+}
+
+const CREATECOMPANY = async ({ title, email_id, address, created_by }) => {
+  try {
+    const res = await pool.query(`insert into company(title, email_id, address, created_by) values($1, $2, $3, $4)`, [title, email_id, address, created_by]);
+    const { rows } = await pool.query(`select * from company where email_id = $1`, [email_id]);
+    return res && rows[0]
+  } catch (error) {
+    console.log(error);
+    return error
+  }
+}
+
+const UPDATECOMPANY = async ({ id, title, email_id, address, created_by }, res) => {
+  try {
+    let getOne = await pool.query('select * from company where id = $1', [id]);
+    if (!getOne.rows[0]) return res.send("Company not found!")
+
+    title = title ? title : getOne.rows[0].title
+    email_id = email_id ? email_id : getOne.rows[0].email_id
+    address = address ? address : getOne.rows[0].address
+    created_by = created_by ? created_by : getOne.rows[0].created_by
+
+    const data = await pool.query(`update company set title = $1, email_id = $2, address = $3, created_by = $4 where id = $5
+    `, [title, email_id, address, created_by, id]);
+    const company = await pool.query('select * from company where id = $1', [id]);
+    if (data.command === "UPDATE") return res.json({ status: 200, message: "Updated company!!!", data: company });
+    return res.json({ status: 400, message: "Company did not update!" });
   } catch (error) {
     console.log(error);
     return error.message
@@ -103,5 +143,8 @@ export default {
   REGISTER,
   GETUSERS,
   UPDATEUSER,
-  DELETEUSER
+  DELETEUSER,
+  UPDATEEMAIL,
+  CREATECOMPANY,
+  UPDATECOMPANY
 }
