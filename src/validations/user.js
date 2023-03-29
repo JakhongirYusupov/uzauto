@@ -18,7 +18,21 @@ const REGISTER = (data) => {
   return schema.validate(data)
 };
 
+const UPDATE = (data) => {
+  const schema = Joi.object({
+    id: Joi.number().required(),
+    username: Joi.string().min(3).max(50),
+    email_id: Joi.number(),
+    age: Joi.number().min(16).max(90),
+    password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
+  })
+  return schema.validate(data)
+};
+
+
+
 export default {
   LOGIN,
-  REGISTER
+  REGISTER,
+  UPDATE
 }

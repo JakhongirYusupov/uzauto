@@ -1,4 +1,3 @@
-import { verify } from "jsonwebtoken";
 import jwt from 'jsonwebtoken';
 import sql from "../database/responses.js";
 import dotenv from 'dotenv';
