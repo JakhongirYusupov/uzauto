@@ -29,13 +29,32 @@ export default {
       const user = req.user;
 
       if (!user) return res.json({ status: 404, message: "You are not login!" });
-      else if (user.role !== "owner") {
-        return res.json({ status: 400, message: "Only owner can update company, You are not owner!" });
+      else if (user.role !== "owner" && user.role !== "admin") {
+        return res.json({ status: 400, message: "Only owner or admin can update company, You are a user!" });
       }
 
-      sql.UPDATECOMPANY(req.body, res);
+      const error = await sql.UPDATECOMPANY(req.body, res);
+      if (error) return res.json({ status: 400, message: "Company did not update!", error: error.message })
     } catch (error) {
       console.log(error.message);
+      res.json({ status: 400, message: error.message });
+    }
+  },
+
+  DELETE: async (req, res) => {
+    try {
+      const user = req.user;
+
+      if (!user) return res.json({ status: 404, message: "You are not login!" });
+      else if (user.role !== "owner" && user.role !== "admin") {
+        return res.json({ status: 400, message: "Only owner or admin can delete company, You are a user!" });
+      };
+
+      const error = await sql.DELETECOMPANY(req.body, res);
+      if (error) return res.json({ status: 400, message: "Company did not delete!", error: error.message })
+
+    } catch (error) {
+      console.log(error);
       res.json({ status: 400, message: error.message });
     }
   }

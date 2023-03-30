@@ -7,5 +7,6 @@ const route = Router();
 
 route.post("/company", verifyToken, companyMiddleware.POST, companyController.POST);
 route.put("/company", verifyToken, companyMiddleware.UPDATE, companyController.UPDATE);
+route.delete("/company", verifyToken, companyMiddleware.DELETE, companyController.DELETE);
 
 export default route

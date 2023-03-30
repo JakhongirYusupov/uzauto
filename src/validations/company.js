@@ -19,8 +19,16 @@ const UPDATE = (data) => {
   })
   return schema.validate(data)
 };
+const DELETE = (data) => {
+  const schema = Joi.object({
+    id: Joi.number().required(),
+    email_id: Joi.number().required()
+  })
+  return schema.validate(data)
+};
 
 export default {
   POST,
-  UPDATE
+  UPDATE,
+  DELETE
 }

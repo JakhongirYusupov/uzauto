@@ -128,8 +128,22 @@ const UPDATECOMPANY = async ({ id, title, email_id, address, created_by }, res) 
     const data = await pool.query(`update company set title = $1, email_id = $2, address = $3, created_by = $4 where id = $5
     `, [title, email_id, address, created_by, id]);
     const company = await pool.query('select * from company where id = $1', [id]);
-    if (data.command === "UPDATE") return res.json({ status: 200, message: "Updated company!!!", data: company });
-    return res.json({ status: 400, message: "Company did not update!" });
+    if (data.command === "UPDATE") return res.json({ status: 200, message: "Updated company!!!", data: company.rows[0] });
+    res.json({ status: 400, message: "Company did not update!" });
+  } catch (error) {
+    console.log(error);
+    return error.message
+  }
+}
+
+const DELETECOMPANY = async ({ id, email_id }, res) => {
+  try {
+    let getOne = await pool.query('select * from company where id = $1 and email_id = $2', [id, email_id]);
+    if (!getOne.rows[0]) return res.json({ status: 404, message: "Company not found!" });
+    await pool.query(`delete from company where id = $1 and email_id = $2`, [id, email_id]);
+
+    return res.json({ status: 200, message: "Company successfull deleted!" })
+
   } catch (error) {
     console.log(error);
     return error.message
@@ -146,5 +160,6 @@ export default {
   DELETEUSER,
   UPDATEEMAIL,
   CREATECOMPANY,
-  UPDATECOMPANY
+  UPDATECOMPANY,
+  DELETECOMPANY
 }
