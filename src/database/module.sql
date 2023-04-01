@@ -79,7 +79,7 @@ create table session(
   user_id integer not null REFERENCES users
                             ON DELETE CASCADE 
                             ON UPDATE CASCADE,
-  start_at date not null,
-  end_at date not null,
+  start_at date,
+  end_at date,
   constraint fk_user_id foreign key(user_id) references users(id)
 );

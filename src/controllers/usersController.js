@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import sql from "../database/responses.js";
 import dotenv from "dotenv";
+import pool from "../database/pg.js";
 dotenv.config();
 
 const secret_key = process.env.SECRETKEY;
@@ -112,11 +113,60 @@ export default {
   UPDATEUSERINFO: async (req, res) => {
     try {
       const user = req.user;
-      if (!user) return res.json({ status: 404, message: "You are not login!" });
+      if (!user)
+        return res.json({ status: 404, message: "You are not login!" });
       else if (user.role !== "owner") {
-        return res.json({ status: 400, message: "Only owner can update user, You are not owner!" });
+        return res.json({
+          status: 400,
+          message: "Only owner can update user, You are not owner!",
+        });
       }
       await sql.UPDATEUSERINFO(req.body, res);
+    } catch (error) {
+      console.log(error);
+      res.json({ status: 400, message: error.message });
+    }
+  },
+
+  GETCOMPANYID: async (req, res) => {
+    try {
+      const { companyid } = req.params;
+      const data = await pool.query(
+        `select id, username, email_id, age, company_id from users where company_id = $1`,
+        [companyid]
+      );
+      return res.json({ status: 200, data: data.rows });
+    } catch (error) {
+      console.log(error);
+      res.json({ status: 400, message: error.message });
+    }
+  },
+
+  PUTSESSION: async (req, res) => {
+    try {
+      const user = req.user;
+      if (!user)
+        return res.json({ status: 404, message: "You are not login!" });
+      pool.query(
+        `update session set end_at = current_timestamp where user_id = $1`,
+        [user.id]
+      );
+      return res.json({ status: 200, message: "User's session updated!" });
+    } catch (error) {
+      console.log(error);
+      res.json({ status: 400, message: error.message });
+    }
+  },
+
+  GETSESSION: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const data = await pool.query(
+        `select u.username, u.email_id, u.age, u.company_id, u.role, s.start_at, s.end_at from session s inner join users u on s.user_id = u.id where s.user_id = $1`,
+        [id]
+      );
+
+      return res.json({ status: 200, data: data.rows[0] });
     } catch (error) {
       console.log(error);
       res.json({ status: 400, message: error.message });
