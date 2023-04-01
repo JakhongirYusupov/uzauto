@@ -35,9 +35,21 @@ const UPDATE = (req, res, next) => {
     console.log(error.message);
   }
 }
+const UPDATEUSERINFO = (req, res, next) => {
+  try {
+    const { error } = userValidation.UPDATEUSERINFO(req.body)
+    if (error) {
+      return res.status(400).json({ msg: error.details[0].message })
+    }
+    next()
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
 export default {
   LOGIN,
   REGISTER,
-  UPDATE
+  UPDATE,
+  UPDATEUSERINFO
 }

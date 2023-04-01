@@ -10,6 +10,6 @@ route.post("/users", verifyToken, userMiddleware.REGISTER, usersController.POST)
 route.put("/users", verifyToken, userMiddleware.UPDATE, usersController.UPDATE);
 route.get("/users/login", verifyToken, userMiddleware.LOGIN, usersController.LOGIN);
 route.delete("/users", verifyToken, usersController.DELETE);
-route.put("/users/info", verifyToken, usersController.UPDATEUSERINFO)
+route.put("/users/info", verifyToken, userMiddleware.UPDATEUSERINFO,usersController.UPDATEUSERINFO)
 
 export default route

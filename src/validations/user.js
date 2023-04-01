@@ -29,10 +29,20 @@ const UPDATE = (data) => {
   return schema.validate(data)
 };
 
+const UPDATEUSERINFO = (data) => {
+  const schema = Joi.object({
+    id: Joi.number().required(),
+    company_id: Joi.number(),
+    role: Joi.string().valid("admin", "user", "owner")
+  })
+  return schema.validate(data)
+};
+
 
 
 export default {
   LOGIN,
   REGISTER,
-  UPDATE
+  UPDATE,
+  UPDATEUSERINFO
 }

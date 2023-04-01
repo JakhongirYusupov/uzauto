@@ -67,7 +67,9 @@ const GETUSERS = async (data) => {
 const UPDATEUSER = async (data) => {
   try {
     let { id, username, email_id, age, password } = data;
-    const getOne = await pool.query('select id, username, email_id, age, password, role from users where id = $1', [id])
+    const getOne = await pool.query('select id, username, email_id, age, password, role from users where id = $1', [id]);
+    if(!getOne.rows[0]) return res.json({status: 404, message: "User not found!"})
+
     username = username ? username : getOne.rows[0].username
     email_id = email_id ? email_id : getOne.rows[0].email_id
     age = age ? age : getOne.rows[0].age
@@ -91,6 +93,24 @@ const DELETEUSER = async (id) => {
   } catch (error) {
     console.log(error);
     return error.message
+  }
+}
+
+const UPDATEUSERINFO = async (data, res) => {
+  try {
+    let {id, company_id, role} = data;
+    const getOne = (await pool.query(`select company_id, role from users where id = $1`, [id])).rows[0];
+    if(!getOne) return res.json({status: 404, message: "User not found"});
+
+    company_id = company_id ? company_id : getOne.company_id
+    role = role ? role : getOne.role
+
+    const response = await pool.query(`update users set company_id = $1, role = $2 where id = $3`, [company_id, role, id]);
+    if(response.command === "UPDATE") return res.json({status: 200, message: "User updated!"});
+    else return res.json({status: 400, message: "User did not update", error: res});
+  } catch (error) {
+    console.log(error);
+    return res.json({status: 400, message: "User did not update!", error: error.message});
   }
 }
 
@@ -158,6 +178,7 @@ export default {
   GETUSERS,
   UPDATEUSER,
   DELETEUSER,
+  UPDATEUSERINFO,
   UPDATEEMAIL,
   CREATECOMPANY,
   UPDATECOMPANY,
